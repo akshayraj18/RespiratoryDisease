@@ -46,7 +46,7 @@
       <h2 class="project-tagline">CS 7641</h2>
       
       
-        <a href="https://docs.google.com/spreadsheets/d/1F2edk46h4Y2pRtAljtTJkTlX7lTHXb5XfyLk4XZV0KE/edit?usp=sharing" class="btn">Gantt Chart</a>
+        <a href="https://docs.google.com/spreadsheets/d/1F2edk46h4Y2pRtAljtTJkTlX7lTHXb5XfyLk4XZV0KE/edit?usp=sharing" class="btn">Gantt Chart / Contribution Table</a>
 
         <!-- <a href="" class="btn">Download .tar.gz</a> -->
       
@@ -71,7 +71,7 @@
 
 <p>For our supervised learning models, we will experiment with 3 primary methods: (1) various neural network architectures using convolutional and recurrent layers (TensorFlow), (2) an audio spectrogram transformer [7] (Hugging Face), and a (3) random forest (scikit-learn) to model the mix of categorical and continuous variables in our dataset. We will also experiment with ensembles and chains of these models, such as weighted sums of predictions and feeding the input of the neural net into the random forest. For our unsupervised learning method, we plan on clustering the tabular demographic data using a Gaussian mixture model to identify populations of high-risk groups for each disease.</p>
 
-<h2 id="potential-results-and-discussion">(Potential Results and Discussion)</h2>
+<h2 id="potential-results-and-discussion">(Potential) Results and Discussion</h2>
 
 <p>Based on our analysis of related work, we aim to achieve a 60% accuracy rate in correctly classifying respiratory diseases and an F1 score of 0.7. In a medical context, limiting false positives and false negatives is imperative, necessitating the emphasis of F1 score over accuracy to specifically account for both the precision and recall of our model. We will also evaluate our deep neural nets in-training using a class-balanced focal adjustment [3] to cross entropy loss to address the dataset’s imbalance in disease representation.</p>
 
