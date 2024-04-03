@@ -2,7 +2,7 @@
 layout: default
 ---
 
-# Project Proposal
+# Midterm Report
 
 ## Introduction/Background
 
@@ -36,10 +36,12 @@ To evaluate the performance of our GMM, we use both an internal measure, silhoue
 
 These mel spectrograms are 200x500 images; hence, each spectrogram is composed of 100,000 features. In order to greatly reduce the number of features and decrease our future models’ (both the unsupervised and supervised models to be applied on the audio files) complexity, we apply principal component analysis (PCA) on spectrograms. We use PCA on a sample of 1000 spectrograms in order to get an estimate for how many components are needed to retain at least 99% of the original variance. We choose a relatively large cutoff of 99%, as spectrograms contain high-fidelity data that must be kept intact. Below, we visualize the total explained variance ratio as a function of the number of kept principal components (image right-trimmed for brevity).  
 
-![PCA](/images/MelPCA.png)
-*Number of components required to explain 99% of the variance: 927 Below, we visualize 5 examples of spectrograms. The top row depicts the 5 original spectrograms (100,000 features), and the bottom row depicts the reconstruction of these spectrograms from the top 927 principal components.*
-
 ![PCA Reconstruction](/images/PCAVariance.png)
+*Number of components required to explain 99% of the variance: 927*
+
+
+![PCA](/images/MelPCA.png)
+*We visualize 5 examples of spectrograms. The top row depicts the 5 original spectrograms (100,000 features), and the bottom row depicts the reconstruction of these spectrograms from the top 927 principal components.*
 
 ## Next Steps
 

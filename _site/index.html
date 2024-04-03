@@ -53,7 +53,7 @@
     </header>
 
     <main id="content" class="main-content" role="main">
-      <h1 id="project-proposal">Project Proposal</h1>
+      <h1 id="midterm-report">Midterm Report</h1>
 
 <h2 id="introductionbackground">Introduction/Background</h2>
 
@@ -87,10 +87,11 @@
 
 <p>These mel spectrograms are 200x500 images; hence, each spectrogram is composed of 100,000 features. In order to greatly reduce the number of features and decrease our future models’ (both the unsupervised and supervised models to be applied on the audio files) complexity, we apply principal component analysis (PCA) on spectrograms. We use PCA on a sample of 1000 spectrograms in order to get an estimate for how many components are needed to retain at least 99% of the original variance. We choose a relatively large cutoff of 99%, as spectrograms contain high-fidelity data that must be kept intact. Below, we visualize the total explained variance ratio as a function of the number of kept principal components (image right-trimmed for brevity).</p>
 
-<p><img src="/images/MelPCA.png" alt="PCA" />
-<em>Number of components required to explain 99% of the variance: 927 Below, we visualize 5 examples of spectrograms. The top row depicts the 5 original spectrograms (100,000 features), and the bottom row depicts the reconstruction of these spectrograms from the top 927 principal components.</em></p>
+<p><img src="/images/PCAVariance.png" alt="PCA Reconstruction" />
+<em>Number of components required to explain 99% of the variance: 927</em></p>
 
-<p><img src="/images/PCAVariance.png" alt="PCA Reconstruction" /></p>
+<p><img src="/images/MelPCA.png" alt="PCA" />
+<em>We visualize 5 examples of spectrograms. The top row depicts the 5 original spectrograms (100,000 features), and the bottom row depicts the reconstruction of these spectrograms from the top 927 principal components.</em></p>
 
 <h2 id="next-steps">Next Steps</h2>
 
