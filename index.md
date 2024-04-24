@@ -2,7 +2,7 @@
 layout: default
 ---
 
-# Midterm Report
+# Final Report
 
 ## Introduction/Background
 
@@ -43,9 +43,63 @@ These mel spectrograms are 200x500 images; hence, each spectrogram is composed o
 ![PCA](/images/MelPCA.png)
 *We visualize 5 examples of spectrograms. The top row depicts the 5 original spectrograms (100,000 features), and the bottom row depicts the reconstruction of these spectrograms from the top 927 principal components.*
 
+### CNN
+
+We decide that a convolutional neural network (CNN) is an effective method to implement as we aim to predict whether an individual has a particular respiratory disease. 
+
+We preprocess our audio files using a butterworth filter and standard normalization from the midterm, and we save these downsampled clips in a separate folder. We perform some data augmentation on the dataset, including a stretch and pitch shift. Next, we extract features from the clips, including the Mel-frequency cepstral coefficients (MFCCs), sampling means, and mel spectrograms. Next, we engineer the dataset by removing the singular asthma entry. 
+
+![BarChart](/images/BarChart.png)
+
+Note: Since our CNN is architected with the purpose of specifically classifying spectrograms, and not general images, we elect to use 1D convolutions instead of the standard 2D convolutions used by most image classification nets. This is because spectrograms are particularly informative in the x axis (the timestep axis). The y-axis consists of log Mel filterbank bins, and so we conclude that each row of the spectrogram is best analyzed separately. Therefore, we determine that 1D convolutions can better capture the time sequential nature of an audio file in the x axis across each one of the individual filter banks (y axis bins). The dense layers following these convolutional feature extractors take care of modeling the interaction effects between each one of the spectrogram rows.
+
+Using 1D convolutions, 1D max pooling, kernel_size of 5, and some dropout, flatten, and dense layers, our first model has a training accuracy of 0.9583 and validation accuracy of 0.8877. Our training loss was 0.1319 and validation loss of 0.5592. The code, accuracy and loss graphs, and convolution matrix for our first model is below. 
+
+![code1](/images/code1.png)
+
+![model1](/images/model1.png)
+
+![confusion1](/images/confusion12.png)
+
+Note: the convolution matrix is labeled 1-7, which represents the following labels respectively: [Bronchiectasis, Bronchiolitis, COPD, Healthy, LRTI, Pneumonia, URTI]
+
+We notice that the validation loss is significantly greater than the training loss, which is indicative of the model overfitting. Additionally, we aim for a validation accuracy greater than 0.9, so we make the following changes to the model:
+Add a residual block with skip connections to facilitate smoother gradient flow and combat the vanishing gradient problem 
+Incorporate batch normalization to improve training stability and speed by normalizing the input of each layer
+Increase dropout rate to make the network more robust to variations and noise in the input data
+Increase regularization by adding L2 regularizers to mitigate overfitting
+Introduce lr_reduction to introduce a dynamic learning rate
+The code for the new model, accuracy and loss graphs, and convolution matrix is below. 
+
+![code2](/images/code2.png)
+
+![code3](/images/code3.png)
+
+![model2](/images/model2.png)
+
+![confusion2](/images/confusion12.png)
+
+We note that the validation loss nearly mirrors the training loss until around the 20th epoch, and this also can be seen when observing the trend of training and validation accuracy. The validation accuracy was quite high at 0.906, but we aim for higher in the next model. We conclude that because the validation loss is double the training loss around the 40th epoch, the model is overfitting. To combat this issue, we increase the dropout to 0.6 for both layers. Additionally, we change the parameter for regularizers to 0.03 instead of 0.02. The accuracy/loss graphs and convolution matrix below are representative of these changes.
+
+![model3](/images/model3.png)
+
+![confusion3](/images/confusion3.png)
+
+We note that the overfitting issue still persists, but the validation accuracy increased to 0.913. The training accuracy is increased to 0.962, which indicates that the model is overfitting to the training set, but the validation accuracy is high enough to justify a higher validation loss. We run one more model, in which we increase epochs to 200, reduce residual block iterations from 3 to 2, and reduce the dropout rate back to 0.4 and 0.3 respectively. The graph and convolution matrix can be found below. 
+
+![model4](/images/model4.png)
+
+![confusion4](/images/confusion4.png)
+
+We note that the validation curve follows a similar trajectory to the training loss curve, and the validation loss decreases to 0.427. However, both the training and validation accuracy decrease by around 0.02. 
+
+The model with the best accuracy was Model 3. The features of this model that were different from other features was the increased dropout and regularizer parameter as well as the continued implementation of the residual block, block normalization, and other changes made from model 1 to model 2. Model 3 had a 2.85% improvement from the original model, and we notice that the loss and accuracy were less variable. 
+
 ## Next Steps
 
-Our next steps are to refine the preprocessing for the Butterworth band-pass filter by adjusting the low and high band cut values. We will also implement data augmentation and statistical resampling methods to even out the number of entries per diagnosis. To complete our unsupervised learning analysis, we will also extract MFCCs from the audio files and dimension reduce them using both PCA and t-SNE, then attempt to cluster them by using a GMM. Following this, we will first implement a neural net using convolutional and recurrent layers using PyTorch. Next, we will create an audio spectrogram transformer (AST) using Hugging Face and try an original method (Vision Mamba) on our dataset. Finally, we will build a random forest (RF) to model the mix of categorical and continuous variables in our dataset. We will experiment with ensembles of these models such as feeding the input of the neural net embeddings, scores, and probabilities into the random forest.
+Since this project is fairly large scale, we plan on having short and long term goals. For the short term we will build a random forest (RF) to model the mix of categorical and continuous variables in our dataset. We will experiment with ensembles of these models such as feeding the input of the neural net embeddings, scores, and probabilities into the random forest. Additionally, we want to better develop our CNN architecture for the future. As for the long term, we would like to focus on developing or finding a better or more balanced dataset where we can properly run our models on this dataset as our dataset is heavily skewed COPD. Additionally, when we find or develop the new dataset we can look at other diseases that might develop in this chest area with similar tracking devices or in similar locations.
+
+
 
 ## References
 
@@ -62,3 +116,10 @@ Our next steps are to refine the preprocessing for the Butterworth band-pass fil
 [6] A. H. Sabry, O. I. Dallal Bashi, N. H. Nik Ali, and Y. Mahmood Al Kubaisi, “Lung disease recognition methods using audio-based analysis with machine learning,” Heliyon, vol. 10, no. 4, p. e26218, Feb. 2024, doi: 10.1016/j.heliyon.2024.e26218.
 
 [7] Y. Gong, Y.-A. Chung, and J. Glass, “AST: Audio Spectrogram Transformer,” in Interspeech 2021, ISCA, Aug. 2021, pp. 571–575. doi: 10.21437/Interspeech.2021-698.
+
+[8] L. Fedden, “Comparative Audio Analysis With Wavenet, MFCCs, UMAP, t-SNE and PCA,” Medium, Nov. 21, 2017. https://medium.com/@LeonFedden/comparative-audio-analysis-with-wavenet-mfccs-umap-t-sne-and-pca-cb8237bfce2f (accessed Apr. 24, 2024).
+
+[9] P. Zhang, A. Swaminathan, and A. Uddin, “Pulmonary disease detection and classification in patient respiratory audio files using long short-term memory neural networks,” Frontiers in Medicine, vol. 10, Nov. 2023, doi: https://doi.org/10.3389/fmed.2023.1269784
+
+[10] L. Com and G. Hinton, “Visualizing Data using t-SNE Laurens van der Maaten,” Journal of Machine Learning Research, vol. 9, pp. 2579–2605, 2008, Available:
+
